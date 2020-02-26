@@ -1,7 +1,7 @@
 package assembler;
 
 import java.util.HashMap;
-import java.io.File;
+import java.util.Scanner;
 
 public class InstructionSet {
     private HashMap instructionSet;
@@ -33,6 +33,13 @@ public class InstructionSet {
         this.instructionSet.put("SKO", 0xF100);
         this.instructionSet.put("ION", 0xF080);
         this.instructionSet.put("IOF", 0xF040);
+    }
 
+    public int findInstruction(String instruction) {
+        int location = -1;
+        if(this.instructionSet.containsKey(instruction)) {
+            location = ((Integer)this.instructionSet.get(instruction)).intValue();
+        }
+        return location;
     }
 }
