@@ -1,0 +1,6 @@
+LOP 105
+ADS 10b
+PTR 10c
+NBR 10d
+CTR 10e
+SUM 10f
