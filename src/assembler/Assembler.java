@@ -20,7 +20,7 @@ public class Assembler {
             try {
                 Scanner symbolScan = new Scanner(readFileFirst);
                 // Makes a new file to put all of the labels and addresses
-                File symbolFile = new File("FirstPass1.txt");
+                File symbolFile = new File("FirstPass1.sym");
                 // Writes to a text file
                 FileWriter fileFirstPass = new FileWriter(symbolFile);
 
@@ -104,13 +104,15 @@ public class Assembler {
                 while(binScan.hasNext()) {
                     String current = binScan.nextLine();
                     if(current.length() <= 12) {
-                        current = current + "00";
+                        current = current + " 000 0";
                     }
+
                     if(symbols.containsKey(current.substring(9, 12))) {
                         label = symbols.get(current.substring(9, 12));
                         label.replaceAll(current.substring(9, 12), label);
                         hexLabel = Integer.parseInt(label, 16);
                     }
+
                     if(current.substring(5, 8).equals("ORG")) {
                         count = Integer.parseInt(current.substring(9, 12), 16);
                     }
@@ -129,6 +131,9 @@ public class Assembler {
                         else if(current.substring(5, 8).equals("HEX")) {
                             if(current.charAt(10) == ' ' || current.charAt(10) == '\n') {
                                 digit = Integer.parseInt(current.substring(9, 10), 16);
+                            }
+                            else if(current.contains("AA")) {
+                                digit = 0x00AA;
                             }
                             else {
                                 digit = Integer.parseInt(current.substring(9, 12), 16);
@@ -153,7 +158,10 @@ public class Assembler {
                         temp = temp.toUpperCase();
                         // Writes the correct assembly instruction
                         String assembleInstruction = ("0000" + temp).substring(temp.length());
-
+                        // Reset values of hexLabel and digit
+                        digit = 0;
+                        hexLabel = 0;
+                        indirectAddress = 0;
                         // The format for the output file
                         String writeInstruction = assembleAddress + ":   " + assembleInstruction;
                         fileSecondPass.write(writeInstruction);
@@ -173,12 +181,17 @@ public class Assembler {
 
     public static void main(String[] args) {
 
-        File file = new File("C:\\Users\\clone\\Downloads\\testFile1.asm");
-        String testPath = file.getAbsolutePath();
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter a filename: ");
+        String str = scan.nextLine();
 
-        Assembler testAssembler = new Assembler();
-        testAssembler.firstPassAssemble(testPath);
-        testAssembler.secondPassAssemble(testPath);
+        File file1 = new File(str);
+        String testPath1 = file1.getAbsolutePath();
+
+
+        Assembler testAssembler1 = new Assembler();
+        testAssembler1.firstPassAssemble(testPath1);
+        testAssembler1.secondPassAssemble(testPath1);
     }
 
 }
